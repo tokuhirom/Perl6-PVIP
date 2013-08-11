@@ -2,10 +2,25 @@ package Perl6::PVIP;
 use 5.008005;
 use strict;
 use warnings;
+use parent qw(Exporter);
 
 our $VERSION = "0.01";
 
+use Perl6::PVIP::_consts;
 
+use XSLoader;
+XSLoader::load(__PACKAGE__, $VERSION);
+
+sub new {
+    my $class = shift;
+    return bless {
+    }, $class;
+}
+
+sub parse_string {
+    my ($self, $code) = @_;
+    return Perl6::PVIP::_parse_string($code);
+}
 
 1;
 __END__
@@ -19,6 +34,10 @@ Perl6::PVIP - It's new $module
 =head1 SYNOPSIS
 
     use Perl6::PVIP;
+
+    my $pvip = Perl6::PVIP->new();
+    my $node = $pvip->parse_string('say(1)');
+    say $node->as_sexp();
 
 =head1 DESCRIPTION
 

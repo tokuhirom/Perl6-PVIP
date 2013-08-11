@@ -24,3 +24,4 @@ cover_db/
 MYMETA.*
 
 /Perl6-PVIP-*
+/lib/Perl6/PVIP.c

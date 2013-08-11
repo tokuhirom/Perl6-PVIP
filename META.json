@@ -21,7 +21,8 @@
          "share",
          "eg",
          "examples",
-         "author"
+         "author",
+         "builder"
       ]
    },
    "prereqs" : {
@@ -52,5 +53,15 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01"
+   "version" : "0.01",
+   "x_contributors" : [
+      "_why <why@whytheluckystiff.net>",
+      "nddrylliog <nddrylliog@gmail.com>",
+      "Onne Gorter <onne@onnlucky.com>",
+      "Ali Rantakari <visit-with-web-browser@hasseg.org>",
+      "Steve White <swhite@lekkerste.local>",
+      "Amos Wenger <amos@official.fm>",
+      "Reini Urban <rurban@cpanel.net>",
+      "Amos Wenger <amos@lockfree.ch>"
+   ]
 }
