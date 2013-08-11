@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Perl5 bindings for pvip",
    "author" : [
       "tokuhirom <tokuhirom@gmail.com>"
    ],
@@ -53,6 +53,17 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tokuhirom/Perl6-PVIP/issues"
+      },
+      "homepage" : "https://github.com/tokuhirom/Perl6-PVIP",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tokuhirom/Perl6-PVIP.git",
+         "web" : "https://github.com/tokuhirom/Perl6-PVIP"
+      }
+   },
    "version" : "0.01",
    "x_contributors" : [
       "_why <why@whytheluckystiff.net>",

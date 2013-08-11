@@ -35,7 +35,7 @@ PROTOTYPES: DISABLE
 BOOT:
     setup_pvip_const();
 
-SV*
+void
 _parse_string(code)
     SV *code;
 PREINIT:
@@ -43,13 +43,20 @@ PREINIT:
     const char *buf;
     PVIPNode *node;
     SV *sv;
-CODE:
+    SV *errpv;
+PPCODE:
     buf = SvPV(code, len);
-    node = PVIP_parse_string(buf, len, 0, NULL);
-    XS_STRUCT2OBJ(sv, "Perl6::PVIP::Node", node, 1);
-    RETVAL=sv;
-OUTPUT:
-    RETVAL
+    PVIPString* err;
+    node = PVIP_parse_string(buf, len, 0, &err);
+    if (node) {
+        XS_STRUCT2OBJ(sv, "Perl6::PVIP::Node", node, 1);
+        XPUSHs(sv);
+    } else {
+        XPUSHs(&PL_sv_undef);
+        errpv = newSVpv(err->buf, err->len);
+        XPUSHs(errpv);
+        PVIP_string_destroy(err);
+    }
 
 MODULE = Perl6::PVIP    PACKAGE = Perl6::PVIP::Node
 
