@@ -2,6 +2,10 @@ Revision history for Perl extension Perl6-PVIP
 
 {{$NEXT}}
 
+0.02 2013-08-12T11:14:50Z
+
+    - bundle latest PVIP.
+
 0.01 2013-08-11T23:31:11Z
 
     - original version
