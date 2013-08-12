@@ -148,6 +148,7 @@ normal_or_postfix_stmt =
           ( ' '+ 'if' - cond_if:expr - eat_terminator ) { $$ = PVIP_node_new_children2(PVIP_NODE_IF, cond_if, n); }
         | ( ' '+ 'unless' - cond_unless:expr - eat_terminator ) { $$ = PVIP_node_new_children2(PVIP_NODE_UNLESS, cond_unless, n); }
         | ( ' '+ 'for' - cond_for:expr - eat_terminator ) { $$ = PVIP_node_new_children2(PVIP_NODE_FOR, cond_for, n); }
+        | ( ' '+ 'while' - cond_for:expr - eat_terminator ) { $$ = PVIP_node_new_children2(PVIP_NODE_WHILE, cond_for, n); }
         | ( - eat_terminator ) { $$=n; }
     )
 
@@ -209,7 +210,12 @@ for_stmt =
     'for' - src:expr - '{' - body:statementlist - '}' { $$ = PVIP_node_new_children2(PVIP_NODE_FOR, src, body); }
     | 'for' - src:expr - body:lambda { $$ = PVIP_node_new_children2(PVIP_NODE_FOR, src, body); }
 
-unless_stmt =  { body=NULL; } 'unless' - cond:expr - '{' - body:statementlist? - '}' {
+unless_stmt = 
+        { body=NULL; } 'unless' - cond:expr - '{' - body:statementlist? - '}' {
+            $$ = PVIP_node_new_children2(PVIP_NODE_UNLESS, cond, MAYBE(body));
+        }
+        # workaround for `unless Mu { }`
+        | { body=NULL; } 'unless' - cond:ident - '{' - body:statementlist? - '}' {
             $$ = PVIP_node_new_children2(PVIP_NODE_UNLESS, cond, MAYBE(body));
         }
 
@@ -366,7 +372,7 @@ funcall =
     !reserved i:ident - a:paren_args {
         $$ = PVIP_node_new_children2(PVIP_NODE_FUNCALL, i, a);
     }
-    | !reserved i:ident ws+ a:bare_args {
+    | !reserved i:ident ws+ !'{' a:bare_args {
         $$ = PVIP_node_new_children2(PVIP_NODE_FUNCALL, i, a);
     }
 
@@ -611,11 +617,12 @@ twvars =
     | '$*CWD' { $$ = PVIP_node_new_children(PVIP_NODE_TW_CWD); }
     | '$*EXECUTABLE_NAME' { $$ = PVIP_node_new_children(PVIP_NODE_TW_EXECUTABLE_NAME); }
     | '&?ROUTINE' { $$ = PVIP_node_new_children(PVIP_NODE_TW_ROUTINE); }
+    | '%*ENV' { $$ = PVIP_node_new_children(PVIP_NODE_TW_ENV); }
 
 language =
     ':lang<' < [a-zA-Z0-9]+ > '>' { $$ = PVIP_node_new_string(PVIP_NODE_LANG, yytext, yyleng); }
 
-reserved = ( 'if' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' ) ![-A-Za-z0-9]
+reserved = ( 'my' | 'our' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' ) ![-A-Za-z0-9]
 
 role =
     'role' ws+ i:ident - b:block { $$ = PVIP_node_new_children1(PVIP_NODE_ROLE, b); }
@@ -686,6 +693,7 @@ qw_item = < [^ >\n]+ > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyl
 # TODO optimize
 funcdef =
     'my' ws - f:funcdef { $$ = PVIP_node_new_children1(PVIP_NODE_MY, f); }
+    | 'our' ws - f:funcdef { $$ = PVIP_node_new_children1(PVIP_NODE_OUR, f); }
     | 'sub' { p=NULL; e=NULL; } ws+ i:ident - '(' - p:params? - ')' - e:is_exportable? - b:block {
         if (!p) {
             p = PVIP_node_new_children(PVIP_NODE_PARAMS);
