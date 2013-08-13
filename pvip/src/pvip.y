@@ -92,7 +92,7 @@ static char PVIP_input(char *buf, YY_XTYPE D) {
 
 %}
 
-comp_init = BOM? e:statementlist end-of-file {
+comp_init = BOM? e:statementlist - end-of-file {
     $$ = (G->data.root = e);
 }
     | BOM? end-of-file { $$ = (G->data.root = PVIP_node_new_children(PVIP_NODE_NOP)); }
@@ -747,7 +747,7 @@ param_defaults =
     '=' - e:expr { $$=e; }
 
 block =
-    ('{' - s:statementlist - '}') {
+    ('{' - s:statementlist - '}' !'.') {
         if (s->children.nodes[0]->type == PVIP_NODE_PAIR) {
             PVIP_node_change_type(s, PVIP_NODE_HASH);
             $$=s;
