@@ -314,20 +314,20 @@ loose_unary_expr =
 item_assignment_expr =
     a:conditional_expr (
         - (
-              '=>'  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_PAIR,             a, b); a=$$; }
-            | '+='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_ADD,      a, b); a=$$; }
-            | '-='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_SUB,      a, b); a=$$; }
-            | '*='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_MUL,      a, b); a=$$; }
-            | '/='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_DIV,      a, b); a=$$; }
-            | '%='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_MOD,      a, b); a=$$; }
-            | '**=' - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_POW,      a, b); a=$$; }
-            | '+|=' - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BIN_OR,   a, b); a=$$; }
-            | '+&=' - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BIN_AND,  a, b); a=$$; }
-            | '+^=' - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BIN_XOR,  a, b); a=$$; }
-            | '+<=' - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BLSHIFT,  a, b); a=$$; }
-            | '+>=' - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BRSHIFT,  a, b); a=$$; }
-            | '~='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_CONCAT_S, a, b); a=$$; }
-            | 'x='  - b:conditional_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_REPEAT_S, a, b); a=$$; }
+              '=>'  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_PAIR,             a, b); a=$$; }
+            | '+='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_ADD,      a, b); a=$$; }
+            | '-='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_SUB,      a, b); a=$$; }
+            | '*='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_MUL,      a, b); a=$$; }
+            | '/='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_DIV,      a, b); a=$$; }
+            | '%='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_MOD,      a, b); a=$$; }
+            | '**=' - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_POW,      a, b); a=$$; }
+            | '+|=' - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BIN_OR,   a, b); a=$$; }
+            | '+&=' - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BIN_AND,  a, b); a=$$; }
+            | '+^=' - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BIN_XOR,  a, b); a=$$; }
+            | '+<=' - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BLSHIFT,  a, b); a=$$; }
+            | '+>=' - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_BRSHIFT,  a, b); a=$$; }
+            | '~='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_CONCAT_S, a, b); a=$$; }
+            | 'x='  - b:item_assignment_expr { $$ = PVIP_node_new_children2(PVIP_NODE_INPLACE_REPEAT_S, a, b); a=$$; }
         )
     )* { $$=a; }
 
@@ -589,6 +589,8 @@ term =
     | < '$~' [A-Za-z] [A-Za-z0-9]* > { $$ = PVIP_node_new_string(PVIP_NODE_SLANGS, yytext, yyleng); }
     | '*' ![*=] { $$ = PVIP_node_new_children(PVIP_NODE_WHATEVER); }
     | attr_vars
+    # 'rand' is resreved word.
+    | 'rand' ![-a-zA-Z0-9] { $$ = PVIP_node_new_children(PVIP_NODE_RAND); }
 
 enum =
     'enum' ws+ q:qw { $$ = PVIP_node_new_children2(PVIP_NODE_ENUM, PVIP_node_new_children(PVIP_NODE_NOP), q); }
@@ -625,7 +627,7 @@ twvars =
 language =
     ':lang<' < [a-zA-Z0-9]+ > '>' { $$ = PVIP_node_new_string(PVIP_NODE_LANG, yytext, yyleng); }
 
-reserved = ( 'my' | 'our' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' ) ![-A-Za-z0-9]
+reserved = ( 'my' | 'our' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' | 'rand' ) ![-A-Za-z0-9]
 
 role =
     'role' ws+ i:ident - b:block { $$ = PVIP_node_new_children2(PVIP_NODE_ROLE, i, b); }
