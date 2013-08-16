@@ -156,6 +156,8 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_WHATEVER);
     PConst(PVIP_NODE_TW_ENV);
     PConst(PVIP_NODE_ARRAY_DEREF);
+    PConst(PVIP_NODE_RAND);
+    PConst(PVIP_NODE_END);
     PConst(PVIP_CATEGORY_UNKNOWN);
     PConst(PVIP_CATEGORY_STRING);
     PConst(PVIP_CATEGORY_INT);
