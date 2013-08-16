@@ -113,7 +113,7 @@ CODE:
     PVIP_category_t cat = PVIP_node_category(node->type);
     switch (cat) {
     case PVIP_CATEGORY_STRING:
-        RETVAL = newSVpv(node->pv->buf, node->pv->len);
+        RETVAL = newSVpvn(node->pv->buf, node->pv->len);
         break;
     case PVIP_CATEGORY_INT:
         RETVAL = newSViv(node->iv);
