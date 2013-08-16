@@ -100,7 +100,6 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_TRY);
     PConst(PVIP_NODE_REF);
     PConst(PVIP_NODE_MULTI);
-    PConst(PVIP_NODE_LANG);
     PConst(PVIP_NODE_UNARY_BOOLEAN);
     PConst(PVIP_NODE_UNARY_UPTO);
     PConst(PVIP_NODE_STDOUT);
