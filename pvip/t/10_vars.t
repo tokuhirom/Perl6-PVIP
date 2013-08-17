@@ -125,16 +125,29 @@ $*EXECUTABLE_NAME
 --- code
 $!x
 --- expected
-(statements (public_attribute "x"))
+(statements (attribute_variable "$!x"))
 
 ===
 --- code
 $.x
 --- expected
-(statements (private_attribute "x"))
+(statements (attribute_variable "$.x"))
 
 ===
 --- code
 $^a
 --- expected
 (statements (tw_a))
+
+=== S03-binding/attributes.t
+--- code
+our $.x
+--- expected
+(statements (our (attribute_variable "$.x")))
+
+=== S03-binding/attributes.t
+--- code
+has $x
+--- expected
+(statements (has (variable "$x")))
+

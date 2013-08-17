@@ -161,11 +161,15 @@ has_stmt =
         $$ = PVIP_node_new_children1(PVIP_NODE_HAS, v);
     }
 
+# $.var
+# $!var
+# @!var
+# @.var
 attr_vars =
-    '$' (
-          '.' <[a-z]+> { $$=PVIP_node_new_string(PVIP_NODE_PRIVATE_ATTRIBUTE, yytext, yyleng); }
-        | '!' <[a-z]+> { $$=PVIP_node_new_string(PVIP_NODE_PUBLIC_ATTRIBUTE, yytext, yyleng); }
-    )
+    < [$@] [.!] [a-z]+> {
+        $$=PVIP_node_new_string(PVIP_NODE_ATTRIBUTE_VARIABLE, yytext, yyleng);
+    }
+    | scalar
 
 multi_method_stmt =
     'multi' ws - m:method_stmt { $$ = PVIP_node_new_children1(PVIP_NODE_MULTI, m); }
@@ -304,8 +308,7 @@ reduce_operator =
     | < '-' > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
     | < '<=' > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
     | < '>=' > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
-    | < 'min' > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
-    | < 'max' > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
+    | < ( 'min' | 'max' | 'gcd' ) > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
 
 lvalue =
     my
@@ -323,8 +326,10 @@ comma_operator_expr = a:loose_unary_expr { $$=a; } ( - ',' - b:loose_unary_expr 
         }
     } )*
 
+# L
 loose_unary_expr =
-    'not' - f1:item_assignment_expr { $$ = PVIP_node_new_children1(PVIP_NODE_NOT, f1); }
+    'not' ![-a-zA-Z0-9] - f1:loose_unary_expr { $$ = PVIP_node_new_children1(PVIP_NODE_NOT, f1); }
+    | 'so' ![-a-zA-Z0-9] - f1:loose_unary_expr { $$ = PVIP_node_new_children1(PVIP_NODE_SO, f1); }
     | f1:item_assignment_expr { $$=f1 }
 
 item_assignment_expr =
@@ -506,6 +511,10 @@ multiplicative_expr =
             $$ = PVIP_node_new_children2(PVIP_NODE_BLSHIFT, l, r);
             l = $$;
         }
+        | - 'gcd' ![=a-zA-Z0-9] - r:symbolic_unary {
+            $$ = PVIP_node_new_children2(PVIP_NODE_GCD, l, r);
+            l = $$;
+        }
     )* {
         $$ = l;
     }
@@ -657,7 +666,7 @@ twvars =
     | '$^b' { $$ = PVIP_node_new_children(PVIP_NODE_TW_B); }
     | '$^c' { $$ = PVIP_node_new_children(PVIP_NODE_TW_C); }
 
-reserved = ( 'my' | 'our' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' | 'rand' | 'END' | 'BEGIN' | 'Z' ) ![-A-Za-z0-9]
+reserved = ( 'my' | 'our' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' | 'rand' | 'END' | 'BEGIN' | 'Z' | 'so' | 'not' | 'andthen' | 'and' ) ![-A-Za-z0-9]
 
 role =
     'role' ws+ i:ident - b:block { $$ = PVIP_node_new_children2(PVIP_NODE_ROLE, i, b); }
@@ -750,7 +759,7 @@ lambda =
         $$ = PVIP_node_new_children2(PVIP_NODE_LAMBDA, p, b);
     }
     | b:block { $$ = PVIP_node_new_children1(PVIP_NODE_LAMBDA, b); }
-    | {p=NULL; } 'sub' ws+ (!'{' p:params)? - b:block {
+    | {p=NULL; } 'sub' ![-a-zA-Z0-9] - ( !'{' p:params)? - b:block {
         if (!p) {
             p = PVIP_node_new_children(PVIP_NODE_PARAMS);
         }
