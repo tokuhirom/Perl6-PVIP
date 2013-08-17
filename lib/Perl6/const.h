@@ -146,7 +146,7 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_JUNCTIVE_OR);
     PConst(PVIP_NODE_UNICODE_CHAR);
     PConst(PVIP_NODE_STUB);
-    PConst(PVIP_NODE_EXPORTABLE);
+    PConst(PVIP_NODE_EXPORT);
     PConst(PVIP_NODE_PARAM);
     PConst(PVIP_NODE_BITWISE_OR);
     PConst(PVIP_NODE_BITWISE_AND);
@@ -158,6 +158,10 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_RAND);
     PConst(PVIP_NODE_END);
     PConst(PVIP_NODE_BEGIN);
+    PConst(PVIP_NODE_IS_DIVISIBLE_BY);
+    PConst(PVIP_NODE_NOT_DIVISIBLE_BY);
+    PConst(PVIP_NODE_CONTAINER_IDENTITY);
+    PConst(PVIP_NODE_Z);
     PConst(PVIP_CATEGORY_UNKNOWN);
     PConst(PVIP_CATEGORY_STRING);
     PConst(PVIP_CATEGORY_INT);
