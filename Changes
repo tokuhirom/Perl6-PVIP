@@ -2,6 +2,11 @@ Revision history for Perl extension Perl6-PVIP
 
 {{$NEXT}}
 
+0.03 2013-08-17T00:42:51Z
+
+    - Updated pvip to latest.
+    - Fixed bug around newSVpv with zero length string.
+
 0.02 2013-08-12T11:14:50Z
 
     - bundle latest PVIP.
