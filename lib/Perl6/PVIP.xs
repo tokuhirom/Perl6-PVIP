@@ -69,6 +69,15 @@ CODE:
 OUTPUT:
     RETVAL
 
+int
+line_number(self)
+    SV *self;
+CODE:
+    PVIPNode *node = XS_STATE(PVIPNode*, self);
+    RETVAL = node->line_number;
+OUTPUT:
+    RETVAL
+
 SV*
 as_sexp(self)
     SV *self;
