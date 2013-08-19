@@ -35,6 +35,7 @@ sub ACTION_clean {
         $self->do_system($Config{make}, 'clean');
         chdir $cwd;
     }
+    $self->SUPER::ACTION_clean();
 }
 
 1;
