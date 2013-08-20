@@ -18,5 +18,20 @@ use Perl6::PVIP;
     is($n->value->[0]->value, '');
 }
 
+{
+    my $n = Perl6::PVIP->new->parse_string(q!'hoge'!);
+    is_deeply($n->perl, +{
+        type => PVIP_NODE_STATEMENTS,
+        line_number => 1,
+        value => [
+            +{
+                type => PVIP_NODE_STRING,
+                line_number => 0,
+                value => 'hoge',
+            }
+        ],
+    });
+}
+
 done_testing;
 

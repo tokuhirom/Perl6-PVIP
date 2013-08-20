@@ -7,6 +7,7 @@ use parent qw(Exporter);
 our $VERSION = "0.05";
 
 use Perl6::PVIP::_consts;
+use Perl6::PVIP::Node;
 
 use XSLoader;
 XSLoader::load(__PACKAGE__, $VERSION);

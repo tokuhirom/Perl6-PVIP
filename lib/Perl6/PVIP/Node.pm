@@ -1,3 +1,28 @@
+package Perl6::PVIP::Node;
+use strict;
+use warnings;
+
+# most of methods are written in xs.
+
+sub perl {
+    my $self = shift;
+    +{
+        type        => $self->type,
+        line_number => $self->line_number,
+        value       => do {
+            if ($self->category == Perl6::PVIP::PVIP_CATEGORY_CHILDREN()) {
+                [map { $_->perl } @{$self->value}];
+            } else {
+                $self->value;
+            }
+        }
+    };
+}
+
+1;
+
+__END__
+
 =head1 NAME
 
 Perl6::PVIP::Node - Node object
