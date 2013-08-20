@@ -203,14 +203,21 @@ pkg_name = < [a-zA-Z] [a-zA-Z0-9_]* ( '::' [a-zA-Z0-9_]+ )* > {
 
 die_stmt = 'die' ws e:expr eat_terminator { $$ = PVIP_node_new_children1(&(G->data), PVIP_NODE_DIE, e); }
 
-while_stmt = 'while' - cond:expr - (
+while_stmt =
+    w:while_until - cond:expr { PVIP_node_push_child(w,cond); } - (
             b:block {
-                $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_WHILE, cond, b);
+                PVIP_node_push_child(w,b);
+                $$ = w;
             }
             | l:lambda {
-                $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_WHILE, cond, l);
+                PVIP_node_push_child(w,l);
+                $$ = w;
             }
         )
+
+while_until =
+    'while' { $$ = PVIP_node_new_children(&(G->data), PVIP_NODE_WHILE); }
+    | 'until' { $$ = PVIP_node_new_children(&(G->data), PVIP_NODE_UNTIL); }
 
 for_stmt =
     'for' - src:expr - body:block { $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_FOR, src, body); }
@@ -311,6 +318,7 @@ lvalue =
     my
     | v:variable { $$=v; } (
         '[' - e:expr - ']' { $$=PVIP_node_new_children2(&(G->data), PVIP_NODE_ATPOS, v, e); }
+        | '<' - k:atkey_key - '>' {  $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_ATKEY, v, k); }
     )?
 
 comma_operator_expr = a:loose_unary_expr { $$=a; } ( - ',' - b:loose_unary_expr {
@@ -445,7 +453,7 @@ additive_expr =
             $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_BIN_XOR, l, r);
             l = $$;
         }
-        | - '+' ![<>=] - r1:multiplicative_expr {
+        | - '+' ![|<>=] - r1:multiplicative_expr {
             $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_ADD, l, r1);
             l = $$;
           }
@@ -664,7 +672,7 @@ twvars =
     | '$^b' { $$ = PVIP_node_new_children(&(G->data), PVIP_NODE_TW_B); }
     | '$^c' { $$ = PVIP_node_new_children(&(G->data), PVIP_NODE_TW_C); }
 
-reserved = ( 'my' | 'our' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' | 'now' | 'rand' | 'END' | 'BEGIN' | 'Z' | 'so' | 'not' | 'andthen' | 'and' ) ![-A-Za-z0-9]
+reserved = ( 'my' | 'our' | 'until' | 'while' | 'unless' | 'if' | 'role' | 'class' | 'try' | 'has' | 'sub' | 'cmp' | 'enum' | 'now' | 'rand' | 'END' | 'BEGIN' | 'Z' | 'so' | 'not' | 'andthen' | 'and' ) ![-A-Za-z0-9]
 
 role =
     'role' ws+ i:ident - b:block { $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_ROLE, i, b); }
