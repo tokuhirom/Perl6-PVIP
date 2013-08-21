@@ -329,7 +329,14 @@ comma_operator_expr = a:loose_unary_expr { $$=a; } ( - ',' - b:loose_unary_expr 
             $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_LIST, a, b);
             a=$$;
         }
-    } )*
+    } )* ( - ',' {
+        if (a->type==PVIP_NODE_LIST) {
+            $$=a;
+        } else {
+            $$ = PVIP_node_new_children1(&(G->data), PVIP_NODE_LIST, a);
+            a=$$;
+        }
+    } )?
 
 # L
 loose_unary_expr =
@@ -585,7 +592,7 @@ method_postfix_expr =
                 $$ = PVIP_node_new_children3(&(G->data), PVIP_NODE_METHODCALL, f1, f2, f3);
                 f1=$$;
             }
-            | a:paren_args { $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_FUNCALL, f1, a); f1=$$; }
+            | '.'? a:paren_args { $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_FUNCALL, f1, a); f1=$$; }
           )*
 
 atkey_key = < [^>]+ > { $$ = PVIP_node_new_string(PVIP_NODE_STRING, yytext, yyleng); }
