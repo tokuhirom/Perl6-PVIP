@@ -178,6 +178,8 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_IS_COPY);
     PConst(PVIP_NODE_LEG);
     PConst(PVIP_NODE_NEED);
+    PConst(PVIP_NODE_INTEGER_DIVISION);
+    PConst(PVIP_NODE_LCM);
     PConst(PVIP_CATEGORY_UNKNOWN);
     PConst(PVIP_CATEGORY_STRING);
     PConst(PVIP_CATEGORY_INT);
