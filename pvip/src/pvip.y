@@ -173,7 +173,7 @@ multi_method_stmt =
 
 method_stmt =
     { p=NULL; } 'method' ws - i:ident ( - '(' - p:params? - ')' )? - b:block { $$ = PVIP_node_new_children3(&(G->data), PVIP_NODE_METHOD, i, MAYBE(p), b); }
-    | { p=NULL; } 'submethod' ws - i:ident - '(' - p:params? - ')' - b:block { $$ = PVIP_node_new_children3(&(G->data), PVIP_NODE_SUBMETHOD, i, MAYBE(p), b); }
+    | { p=NULL; } 'submethod' ws - i:ident ( - '(' - p:params? - ')' )? - b:block { $$ = PVIP_node_new_children3(&(G->data), PVIP_NODE_SUBMETHOD, i, MAYBE(p), b); }
 
 normal_stmt = return_stmt | last_stmt | next_stmt | expr
 
@@ -401,6 +401,7 @@ structural_infix_expr =
     a1:named_unary_expr (
         - '..' !'.' - a2:named_unary_expr { $$=PVIP_node_new_children2(&(G->data), PVIP_NODE_RANGE, a1, a2); a1=$$; }
         | - 'cmp' ![a-z] - a2:named_unary_expr { $$=PVIP_node_new_children2(&(G->data), PVIP_NODE_CMP, a1, a2); a1=$$; }
+        | - 'leg' ![a-z] - a2:named_unary_expr { $$=PVIP_node_new_children2(&(G->data), PVIP_NODE_LEG, a1, a2); a1=$$; }
         | - '<=>' - a2:named_unary_expr { $$=PVIP_node_new_children2(&(G->data), PVIP_NODE_NUM_CMP, a1, a2); a1=$$; }
     )? { $$=a1; }
 
