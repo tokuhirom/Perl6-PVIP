@@ -339,6 +339,15 @@ lvalue =
         '[' - e:expr - ']' { $$=PVIP_node_new_children2(&(G->data), PVIP_NODE_ATPOS, v, e); }
         | '<' - k:atkey_key - '>' {  $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_ATKEY, v, k); }
     )?
+    | '(' - a:lvalue - ( ',' - b:lvalue {
+        if (a->type == PVIP_NODE_LIST) {
+            PVIP_node_push_child(a, b);
+            $$=a;
+        } else {
+            a = CHILDREN2(PVIP_NODE_LIST, a, b);
+            $$=a;
+        }
+    } )* - ')'
 
 comma_operator_expr = a:loose_unary_expr { $$=a; } ( - ',' - b:loose_unary_expr {
         if (a->type==PVIP_NODE_LIST) {
@@ -960,7 +969,8 @@ dq_string = s:dq_string_start { s = PVIP_node_new_string(PVIP_NODE_STRING, "", 0
         "\n" { G->data.line_number++; s=PVIP_node_append_string(&(G->data), s, "\n", 1); }
         | "{" - e:statementlist - "}" { s=PVIP_node_append_string_node(PARSER, s, e); }
         | "{" - "}" { s=PVIP_node_append_string(&(G->data), s, "", 0); }
-        | < [^"{\\\n$]+ > { s=PVIP_node_append_string(&(G->data), s, yytext, yyleng); }
+        | < [^"{\\\n$%]+ > { s=PVIP_node_append_string(&(G->data), s, yytext, yyleng); }
+        | h:hash_var '<' - k:atkey_key - '>' {  s=PVIP_node_append_string_node(&(G->data), s, CHILDREN2(PVIP_NODE_ATKEY, h, k)); }
         | v:variable { s=PVIP_node_append_string_node(PARSER, s, v); }
         | esc 'a' { s=PVIP_node_append_string(&(G->data), s, "\a", 1); }
         | esc 'b' { s=PVIP_node_append_string(&(G->data), s, "\b", 1); }
