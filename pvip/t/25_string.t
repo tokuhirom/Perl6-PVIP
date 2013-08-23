@@ -63,8 +63,25 @@ __END__
 
 ===
 --- code
+"$a<x>"
+--- expected
+(statements (string_concat (string "") (atkey (variable "$a") (string "x"))))
+
+
+===
+--- code
 "%hash{do_a}"
 --- expected
 (statements (string_concat (string "") (atkey (variable "%hash") (ident "do_a"))))
 
+===
+--- code
+"$hash{do_a}"
+--- expected
+(statements (string_concat (string "") (atkey (variable "$hash") (ident "do_a"))))
 
+===
+--- code
+"%02x"
+--- expected
+(statements (string "%02x"))
