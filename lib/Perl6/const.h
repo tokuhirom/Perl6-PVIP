@@ -96,7 +96,7 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_INPLACE_CONCAT_S);
     PConst(PVIP_NODE_REPEAT_S);
     PConst(PVIP_NODE_INPLACE_REPEAT_S);
-    PConst(PVIP_NODE_UNARY_TILDE);
+    PConst(PVIP_NODE_STRINGIFY);
     PConst(PVIP_NODE_TRY);
     PConst(PVIP_NODE_REF);
     PConst(PVIP_NODE_MULTI);
