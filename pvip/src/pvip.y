@@ -308,8 +308,17 @@ list_prefix_expr =
 
 list_infix_expr =
     a:comma_operator_expr {$$=a;} (
-        - 'Z' - b:comma_operator_expr {
+        - 'Z' ![-_a-zA-Z0-9] - b:comma_operator_expr {
             $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_Z, a, b);
+            a=$$;
+        }
+        | - 'minmax' ![-_a-zA-Z0-9] - b:comma_operator_expr {
+            $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_MINMAX, a, b);
+            a=$$;
+        }
+        # the sequence operator
+        | - '...' ![-._a-zA-Z0-9] - b:comma_operator_expr {
+            $$ = PVIP_node_new_children2(&(G->data), PVIP_NODE_SEQUENCE, a, b);
             a=$$;
         }
     )*
@@ -920,7 +929,7 @@ integer =
     | '0d' <[0-9]+> {
     $$ = PVIP_node_new_intf(PVIP_NODE_INT, yytext, yyleng, 10);
 }
-    | '0x' <[0-9a-f_]+> {
+    | '0x' <[0-9a-fA-F_]+> {
     $$ = PVIP_node_new_intf(PVIP_NODE_INT, yytext, yyleng, 16);
 }
     | '0o' <[0-7]+> {
