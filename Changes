@@ -2,6 +2,10 @@ Revision history for Perl extension Perl6-PVIP
 
 {{$NEXT}}
 
+0.07 2013-08-27T11:29:09Z
+
+    - Updated to latest PVIP(includes incompatible changes)
+
 0.06 2013-08-22T01:02:23Z
 
     - Updated to latest PVIP(includes incompatible changes)
