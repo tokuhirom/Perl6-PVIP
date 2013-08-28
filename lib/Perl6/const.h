@@ -112,6 +112,7 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_NOT_SMART_MATCH);
     PConst(PVIP_NODE_PERL5_REGEXP);
     PConst(PVIP_NODE_TRUE);
+    PConst(PVIP_NODE_FALSE);
     PConst(PVIP_NODE_TW_VM);
     PConst(PVIP_NODE_HAS);
     PConst(PVIP_NODE_ATTRIBUTE_VARIABLE);
