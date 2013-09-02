@@ -191,6 +191,7 @@ static void setup_pvip_const() {
     PConst(PVIP_NODE_IS_RW);
     PConst(PVIP_NODE_IS_REF);
     PConst(PVIP_NODE_PI);
+    PConst(PVIP_NODE_E);
     PConst(PVIP_CATEGORY_UNKNOWN);
     PConst(PVIP_CATEGORY_STRING);
     PConst(PVIP_CATEGORY_INT);
