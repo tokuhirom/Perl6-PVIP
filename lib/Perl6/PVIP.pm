@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use parent qw(Exporter);
 
-our $VERSION = "0.08";
+our $VERSION = "0.09";
 
 use Perl6::PVIP::_consts;
 use Perl6::PVIP::Node;
